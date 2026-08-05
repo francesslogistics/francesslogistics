@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Francess Logistics Services OPC — Connecting Countries One Movement at a Time</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --navy:#00494B;
+    --navy-2:#013638;
+    --teal:#007F82;
+    --paper:#FFFFFF;
+    --offwhite:#F5F7F7;
+    --steel:#5C7274;
+    --orange:#FD8138;
+    --graphite:#232B2B;
+    --line: rgba(0,73,75,0.13);
+    --line-light: rgba(255,255,255,0.22);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--graphite);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+  h1,h2,h3{ font-family:'Poppins', sans-serif; color:var(--navy); line-height:1.15; }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  ul{list-style:none;}
+
+  .wrap{ max-width:1220px; margin:0 auto; padding:0 40px; }
+
+  .eyebrow{
+    display:flex; align-items:center; gap:14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--steel);
+    margin-bottom:18px;
+  }
+  .eyebrow::before{ content:''; width:3px; height:22px; background:var(--orange); flex-shrink:0; }
+  .eyebrow.on-dark{ color:rgba(255,255,255,0.75); }
+
+  /* ---------------- NAV ---------------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+  }
+  nav{ max-width:1220px; margin:0 auto; padding:16px 40px; display:flex; align-items:center; justify-content:space-between; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{ width:40px; height:40px; flex-shrink:0; }
+  .brand-text{ font-family:'Poppins', sans-serif; line-height:1.2; }
+  .brand-text .b1{ font-size:15px; font-weight:700; letter-spacing:0.03em; color:var(--navy); }
+  .brand-text .b2{ font-size:11px; font-weight:600; letter-spacing:0.2em; color:var(--orange); }
+  .brand-mark{ width:40px; height:40px; object-fit:contain; }
+  .navlinks{ display:flex; gap:38px; font-size:14.5px; font-weight:500; color:var(--navy); }
+  .navlinks a{ position:relative; padding-bottom:3px; }
+  .navlinks a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:2px; background:var(--orange); transition:width .25s ease; }
+  .navlinks a:hover::after{ width:100%; }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--orange); outline-offset:3px; }
+
+  /* ---------------- BURGER ---------------- */
+  .burger{
+    display:none;
+    position:relative;
+    width:30px;
+    height:25px;
+    cursor:pointer;
+    background:none;
+    border:none;
+  }
+  .burger span{
+    display:block;
+    width:100%;
+    height:3px;
+    background:#000;
+    position:absolute;
+    transition:all 0.3s ease;
+  }
+  .burger span:nth-child(1){ top:0; }
+  .burger span:nth-child(2){ top:11px; }
+  .burger span:nth-child(3){ top:22px; }
+  .burger:hover span{ background:var(--orange); }
+  .burger:hover span:nth-child(1){ transform:translateY(11px) rotate(45deg); }
+  .burger:hover span:nth-child(2){ opacity:0; }
+  .burger:hover span:nth-child(3){ transform:translateY(-11px) rotate(-45deg); }
+  .burger.open span{ background:var(--orange); }
+  .burger.open span:nth-child(1){ transform:translateY(11px) rotate(45deg); }
+  .burger.open span:nth-child(2){ opacity:0; }
+  .burger.open span:nth-child(3){ transform:translateY(-11px) rotate(-45deg); }
+
+  /* ---------------- FLYOUT MENU ---------------- */
+  .flyout{
+    display:flex; flex-direction:column;
+    max-height:0; overflow:hidden;
+    background:var(--paper);
+    border-top:1px solid transparent;
+    transition:max-height .35s ease, border-color .35s ease;
+  }
+  .flyout.open{ max-height:320px; border-top:1px solid var(--line); }
+  .flyout a{
+    padding:16px 40px; font-size:15px; font-weight:500; color:var(--navy);
+    border-bottom:1px solid var(--line);
+    border-left:3px solid transparent;
+    transition:color .2s ease, background .2s ease, border-left-color .2s ease, padding-left .2s ease;
+  }
+  .flyout a:hover{
+    color:var(--orange); background:var(--offwhite);
+    border-left-color:var(--orange); padding-left:48px;
+  }
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    position:relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    padding: 100px 0; 
+    background:#013638;
+    color:#fff;
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute; inset:0; z-index:0;
+    background-image:
+      linear-gradient(120deg, rgba(0,73,75,0.82), rgba(0,54,56,0.72)),
+      url('/assets/hero-banner.gif');
+    background-size: cover;
+    background-position: center;
+  }
+  .hero-content{ position:relative; z-index:2; max-width:760px; margin:0 auto; text-align:center; }
+  .hero h1{
+    font-size:clamp(34px,5.4vw,58px);
+    font-weight:800; color:#fff; letter-spacing:0.01em;
+    text-transform:uppercase;
+  }
+  .hero p.lead{ margin:22px auto 0; max-width:520px; font-size:17px; color:rgba(255,255,255,0.82); }
+  .hero-cta{ margin-top:36px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:14px; font-weight:600;
+    padding:14px 28px; border-radius:3px;
+    border:1.5px solid #fff; color:#fff;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .btn.solid{ background:var(--orange); border-color:var(--orange); }
+  .btn.solid:hover{ background:#e3712c; border-color:#e3712c; }
+  .btn.ghost:hover{ background:rgba(255,255,255,0.14); }
+
+/* ---------------- NAV QUOTE BUTTON ---------------- */
+  .nav-actions{ display:flex; align-items:center; gap:22px; }
+  .nav-quote{
+    padding:10px 22px; font-size:13px;
+    color:#fff; border-color:var(--orange);
+    /* New styles for the ultra-fast slide up effect */
+    transform: translateY(0);
+    opacity: 1;
+    /* 0.05s is fast enough to feel instant (like 0.001s) but allows the browser to actually render the slide-up motion */
+    transition: transform 0.05s ease-out, opacity 0.05s ease-out, background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .nav-quote.is-hidden {
+    transform: translateY(-15px);
+    opacity: 0;
+    pointer-events: none; /* Prevents clicking while hidden */
+  }
+
+  /* ---------------- SECTION SCAFFOLD ---------------- */
+  section{ padding:110px 0; }
+  .section-head{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:56px; }
+  .section-head h2{ font-size:clamp(28px,3.6vw,40px); font-weight:700; }
+  .section-head p{ color:var(--steel); font-size:16px; max-width:420px; }
+
+  /* ---------------- VISION ---------------- */
+  .vision{ background:var(--offwhite); }
+  .vision-grid{ display:grid; grid-template-columns:0.55fr 1fr; gap:60px; align-items:center; }
+  .vision-mark{
+    width:100%; max-width:340px; aspect-ratio:1;
+    border-radius:50%; border:1.5px solid rgba(0,127,130,0.35);
+    display:flex; align-items:center; justify-content:center;
+    background:#fff;
+  }
+  
+/* Target the wrapper to take up 90% of the circular border */
+  .vision-mark picture { 
+    width: 90%; 
+    height: 90%; 
+    border-radius: 50%; 
+    overflow: hidden; 
+    display: block; /* Removes flexbox to prevent the <source> tag from shifting the image */
+  }
+  
+  /* Tell the image to scale nicely inside that wrapper */
+  .vision-mark img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; /* Ensures the image fills the circle symmetrically */
+    object-position: center;
+    display: block; /* Removes any default inline-element spacing gaps */
+  }
+  
+  .vision-copy h2{ font-size:clamp(26px,3.6vw,38px); margin-bottom:20px; font-weight:700; }
+  .vision-copy p{ font-size:17px; color:var(--steel); max-width:560px; }
+  /* ---------------- SERVICES ---------------- */
+  .services{ background:var(--paper); }
+  .service-row{
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;
+    padding:56px 0; border-bottom:1px solid var(--line);
+  }
+  .service-row:last-child{ border-bottom:none; }
+  .service-row.reverse .service-art{ order:-1; }
+  .service-row.reverse .service-copy{ order:1; }
+  .service-copy h3{ font-size:26px; font-weight:700; margin-bottom:16px; }
+  .service-copy p{ color:var(--steel); font-size:15.5px; margin-bottom:18px; max-width:480px; }
+  .service-copy ul{ display:flex; flex-direction:column; gap:10px; }
+  .service-copy li{ font-size:14.5px; color:var(--graphite); display:flex; align-items:flex-start; gap:10px; }
+  .service-copy li::before{ content:''; width:7px; height:7px; margin-top:6px; background:var(--orange); border-radius:1px; flex-shrink:0; }
+  .service-art{ display:flex; align-items:center; justify-content:center; }
+  .service-art svg{ width:100%; max-width:340px; height:auto; }
+  .service-art img{
+    width:100%; max-width:340px; height:auto;
+    border-radius:8px; object-fit:cover;
+    box-shadow:0 20px 45px rgba(0,73,75,0.12);
+  }
+
+  /* ---------------- STATS ---------------- */
+  .stats{ background:var(--offwhite); }
+  .stats .eyebrow-mono::before{ background:#000; }
+  .stats-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:48px 60px; max-width:560px; }
+  .stat .num{ font-family:'Poppins',sans-serif; font-size:clamp(34px,4vw,50px); font-weight:700; color:var(--navy); }
+  .stat .bar{ width:44px; height:3px; background:#000; margin:14px 0; }
+  .stat .lbl{ font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--steel); }
+
+  /* ---------------- WHY CHOOSE ---------------- */
+  .why{
+    position:relative;
+    background-color:var(--navy-2);
+    background-image:linear-gradient(rgba(1,54,56,0.6),rgba(1,54,56,0.78)), url('/assets/why-choose-bg.avif');
+    background-size:cover; background-position:center;
+    color:#fff;
+  }
+  .why-inner{
+    max-width:640px; padding:70px 56px;
+    background:var(--teal);
+    border-radius:4px;
+  }
+  .why h2{ color:#fff; font-size:clamp(28px,3.6vw,40px); font-weight:700; margin:16px 0 20px; }
+  .why p{ color:rgba(255,255,255,0.85); font-size:16.5px; max-width:520px; }
+
+  /* ---------------- PARTNERS ---------------- */
+  .partners{ background:var(--teal); color:#fff; }
+  .partners-grid{ display:grid; grid-template-columns:0.9fr 1.4fr; gap:56px; align-items:center; }
+  .partners h2{ color:#fff; font-size:clamp(28px,3.6vw,38px); font-weight:700; margin:16px 0 18px; }
+  .partners p{ color:rgba(255,255,255,0.82); font-size:16px; max-width:440px; }
+  .partner-icons{ display:grid; grid-template-columns:repeat(2,1fr); gap:30px; }
+  .partner-card{ text-align:center; padding:26px 14px; }
+  .partner-icon{
+    width:64px; height:64px; margin:0 auto 18px;
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px solid rgba(255,255,255,0.4); border-radius:50%;
+  }
+  .partner-icon svg{ width:28px; height:28px; }
+  .partner-card .lbl{ font-size:12.5px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.85); }
+
+  /* ---------------- FOOTER ---------------- */
+  footer{ background:var(--paper); color:var(--navy); padding:80px 0 28px; border-top:1px solid var(--line); }
+  .footer-grid{ display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:50px; padding-bottom:50px; border-bottom:1px solid var(--line); }
+  .footer-brand p{ margin-top:18px; color:var(--steel); font-size:14px; max-width:300px; }
+  .footer-col h4{ font-size:12.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--orange); margin-bottom:20px; }
+  .footer-col div{ margin-bottom:16px; }
+  .footer-col .k{ font-size:11px; color:var(--steel); letter-spacing:0.1em; text-transform:uppercase; }
+  .footer-col .v{ font-size:15px; margin-top:4px; display:inline-block; color:var(--navy); transition:color .2s ease; }
+  .footer-col a.v:hover{ color:var(--orange); }
+  .contact-row{ display:flex; align-items:flex-start; gap:14px; margin-bottom:18px; color:inherit; }
+  .contact-row:hover .v, .contact-row:hover .contact-icon{ color:var(--orange); }
+  .contact-icon{ flex-shrink:0; width:20px; height:20px; margin-top:2px; color:var(--navy); transition:color .2s ease; }
+  .contact-icon svg{ width:20px; height:20px; }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:24px; font-size:13px; color:var(--steel); flex-wrap:wrap; gap:16px; }
+  .social{ display:flex; gap:14px; }
+  .social a{ width:34px; height:34px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:border-color .2s ease, opacity .2s ease; }
+  .social a img{ width:15px; height:15px; opacity:0.8; transition:opacity .2s ease, filter .2s ease; }
+  .social a:hover{ border-color:var(--orange); }
+  .social a:hover img{ opacity:1; filter:invert(48%) sepia(90%) saturate(1000%) hue-rotate(340deg) brightness(1.05); }
+
+  /* Directional scroll reveals */
+  .animate-on-scroll{
+    opacity:0;
+    transition:opacity 0.8s ease-out, transform 0.8s ease-out;
+    will-change:opacity, transform;
+  }
+  .slide-in-left{ transform:translateX(-70px); }
+  .slide-in-right{ transform:translateX(70px); }
+  .slide-in-up{ transform:translateY(40px); }
+  .animate-on-scroll.is-visible{ opacity:1; transform:translate(0,0); }
+  .delay-100{ transition-delay:100ms; }
+  .delay-200{ transition-delay:200ms; }
+
+  @media (max-width:900px){
+    .navlinks{ display:none; }
+    .burger{ display:block; }
+    .nav-actions{ gap:14px; }
+    .nav-quote{ padding:8px 14px; font-size:12px; }
+    .hero{ padding:140px 0 80px; }
+    .section-head{ grid-template-columns:1fr; }
+    .vision-grid{ grid-template-columns:1fr; }
+    .vision-mark{ max-width:200px; }
+    .service-row{ grid-template-columns:1fr; gap:30px; }
+    .service-row.reverse .service-art{ order:1; }
+    .service-row.reverse .service-copy{ order:2; }
+    .stats-grid{ gap:30px; max-width:100%; }
+    .why-inner{ padding:44px 28px; }
+    .partners-grid{ grid-template-columns:1fr; }
+    .partner-icons{ grid-template-columns:repeat(2,1fr); }
+    .footer-grid{ grid-template-columns:1fr; gap:36px; }
+    section{ padding:76px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="brand" href="/index.html">
+      <picture>
+        <source srcset="/assets/logo.avif" type="image/avif">
+        <img class="brand-mark" src="/assets/logo.png" alt="FLS-OPC logo">
+      </picture>
+      <div class="brand-text">
+        <div class="b1">FRANCESS LOGISTICS</div>
+        <div class="b2">SERVICES OPC</div>
+      </div>
+    </a>
+    <div class="navlinks">
+      <a href="#vision">About Us</a>
+      <a href="#services">Services</a>
+      <a href="#why">Commitment</a>
+      <a href="#contact">Contacts</a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn solid nav-quote" href="/quote/">Request a Quote</a>
+      <button class="burger" id="burgerBtn" aria-label="Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="flyout" id="flyoutMenu">
+    <a href="#vision">About Us</a>
+    <a href="#services">Services</a>
+    <a href="#why">Commitment</a>
+    <a href="#contact">Contacts</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="wrap hero-content">
+    <h1>Connecting Countries One Movement at a Time</h1>
+    <p class="lead">Experience Seamless Freight and Logistics Services with FLS-OPC.</p>
+    <div class="hero-cta">
+      <a class="btn solid" href="/quote/">Request a Quote</a>
+    </div>
+  </div>
+</section>
+
+<section class="vision" id="vision">
+  <div class="wrap vision-grid">
+    <div class="vision-mark animate-on-scroll slide-in-left">
+      <picture>
+        <source srcset="/assets/logo.avif" type="image/avif">
+        <img src="/assets/logo.png" alt="FLS-OPC logo">
+      </picture>
+    </div>
+    <div class="vision-copy animate-on-scroll slide-in-right">
+      <div class="eyebrow">Our Vision</div>
+      <h2>Revolutionizing the Movement of Goods Across the Globe</h2>
+      <p>At Francess Logistics Services OPC, we are revolutionizing the movement of goods across the globe. With a focus on efficiency and reliability, we aim to redefine the logistics industry.</p>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="section-head animate-on-scroll slide-in-up">
+      <div>
+        <div class="eyebrow">Our Services</div>
+        <h2>Delivering Excellence in Logistics</h2>
+      </div>
+    </div>
+
+    <div class="service-row">
+      <div class="service-copy animate-on-scroll slide-in-left">
+        <h3>Air &amp; Sea Freight</h3>
+        <p>We specialize in providing seamless freight transportation solutions tailored to meet the unique needs of our clients. Our commitment to excellence ensures timely and secure delivery of goods worldwide.</p>
+        <p style="margin-bottom:10px; color:var(--graphite); font-weight:600;">We handle:</p>
+        <ul>
+          <li>Import Air / Sea Freight</li>
+          <li>Export Air / Sea Freight</li>
+          <li>Domestic Air / Sea Freight</li>
+          <li>Full Container Load (FCL)</li>
+          <li>Less than Container Load (LCL)</li>
+        </ul>
+      </div>
+      <div class="service-art animate-on-scroll slide-in-right delay-100">
+        <img src="/assets/air-sea-freight.avif" alt="Air and Sea Freight">
+      </div>
+    </div>
+
+    <div class="service-row reverse">
+      <div class="service-copy animate-on-scroll slide-in-right">
+        <h3>Road Freight</h3>
+        <p>With our reliable and affordable shipping options, you can rest assured that your packages will arrive on time and in good condition. Whether you're shipping small items or large, we have the expertise and resources to get the job done right.</p>
+        <p style="margin-bottom:10px; color:var(--graphite); font-weight:600;">We offer:</p>
+        <ul>
+          <li>Pick-up and Delivery</li>
+          <li>Full Truckload (FTL)</li>
+          <li>Less than Truckload (LTL)</li>
+        </ul>
+      </div>
+      <div class="service-art animate-on-scroll slide-in-left delay-100">
+        <img src="/assets/road-freight.avif" alt="Road Freight">
+      </div>
+    </div>
+
+    <div class="service-row">
+      <div class="service-copy animate-on-scroll slide-in-left">
+        <h3>Special Services</h3>
+        <p>Navigating the complexities of customs clearance is made effortless. We streamline the process to ensure efficient clearance of goods, minimizing delays and maximizing productivity.</p>
+        <p style="margin-bottom:10px; color:var(--graphite); font-weight:600;">That's why we offer:</p>
+        <ul>
+          <li>Customs Clearance</li>
+          <li>Documentation</li>
+          <li>Consolidation</li>
+        </ul>
+      </div>
+      <div class="service-art animate-on-scroll slide-in-right delay-100">
+        <img src="/assets/special-services.avif" alt="Special Services">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap animate-on-scroll slide-in-up">
+    <div class="eyebrow eyebrow-mono">By The Numbers</div>
+    <div class="stats-grid">
+      <div class="stat"><div class="num">100+</div><div class="bar"></div><div class="lbl">Clients</div></div>
+      <div class="stat"><div class="num">1B+</div><div class="bar"></div><div class="lbl">Tons of Goods Transported</div></div>
+      <div class="stat"><div class="num">50+</div><div class="bar"></div><div class="lbl">International Partners</div></div>
+      <div class="stat"><div class="num">24/7</div><div class="bar"></div><div class="lbl">Support</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="why" id="why">
+  <div class="wrap animate-on-scroll slide-in-up">
+    <div class="why-inner">
+      <div class="eyebrow on-dark">Why Choose FLS-OPC</div>
+      <h2>A Commitment to Seamless Logistics</h2>
+      <p>At FLS-OPC, we adopt innovative approaches to logistics, ensuring a smooth and reliable movement of goods. Our dedication to excellence and customer satisfaction sets us apart in the industry.</p>
+    </div>
+  </div>
+</section>
+
+<section class="partners">
+  <div class="wrap partners-grid">
+    <div class="animate-on-scroll slide-in-left">
+      <div class="eyebrow on-dark">Our Partnerships</div>
+      <h2>Trusted Partners</h2>
+      <p>We are proud to collaborate with industry-leading partners who share our commitment to excellence in logistics services. Together, we ensure seamless and reliable global logistics solutions.</p>
+    </div>
+    <div class="partner-icons animate-on-scroll slide-in-right delay-100">
+      <div class="partner-card">
+        <div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M12 2.5c.6 0 1 .5 1 1.3v5.4l7 4.3v2l-7-2.1v4.6l2.2 1.7v1.6L12 20l-3.2 1.3v-1.6L11 18.1v-4.6l-7 2.1v-2l7-4.3V3.8c0-.8.4-1.3 1-1.3z"/></svg></div>
+        <div class="lbl">International Carriers</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M3 11h18"/><path d="M8 7V4h8v3"/></svg></div>
+        <div class="lbl">Customs Agencies</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M3 9l9-5 9 5v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div>
+        <div class="lbl">Warehousing Experts</div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-icon"><svg viewBox="0 0 24 24" fill="#fff"><rect x="3" y="15" width="4" height="6" rx="0.5"/><rect x="10" y="10" width="4" height="11" rx="0.5"/><rect x="17" y="3" width="4" height="18" rx="0.5"/></svg></div>
+        <div class="lbl">Technology Providers</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">
+          <picture>
+            <source srcset="/assets/logo.avif" type="image/avif">
+            <img class="brand-mark" src="/assets/logo.png" alt="FLS-OPC logo">
+          </picture>
+          <div class="brand-text">
+            <div class="b1">FRANCESS LOGISTICS</div>
+            <div class="b2">SERVICES OPC</div>
+          </div>
+        </div>
+        <p>Connecting countries one movement at a time — seamless freight and logistics services worldwide.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a class="contact-row contact-link" href="tel:+462302842">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5c0 9.4 6.6 16 16 16l2-4-6-2-2 2c-2.5-1.2-4-2.7-5.2-5.2l2-2-2-6z"/></svg></span>
+          <span class="v">+46 230 2842</span>
+        </a>
+        <a class="contact-row contact-link" href="tel:+639088813881">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5c0 9.4 6.6 16 16 16l2-4-6-2-2 2c-2.5-1.2-4-2.7-5.2-5.2l2-2-2-6z"/></svg></span>
+          <span class="v">+63 908 881 3881</span>
+        </a>
+        <a class="contact-row contact-link" href="mailto:cessamoroso@francesslogistics.com">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h18v14H3z"/><path d="M3 6l9 7 9-7"/></svg></span>
+          <span class="v">cessamoroso@francesslogistics.com</span>
+        </a>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <a class="contact-row contact-link" href="https://www.google.com/maps/search/?api=1&query=14.398404849755162,120.961666352482" target="_blank" rel="noopener">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.3 7-11.5A7 7 0 0 0 5 9.5C5 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
+          <span class="v" style="max-width:220px; display:inline-block;">FAJC Building 2/F Unit-4, Buhay na Tubig, Imus, Cavite, Philippines</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 by FLS-OPC</span>
+      <div class="social">
+        <a href="https://www.facebook.com/share/1UBRhAXXwr/?mibextid=wwXIfr" aria-label="Facebook" target="_blank" rel="noopener">
+          <img src="/assets/facebook.png" alt="Facebook">
+        </a>
+        <a href="https://www.tiktok.com/@francesslogistics" aria-label="TikTok" target="_blank" rel="noopener">
+          <img src="/assets/tiktok.png" alt="TikTok">
+        </a>
+        <a href="https://www.linkedin.com/in/ma-francisca-amoroso-677ab4380 " aria-label="LinkedIn" target="_blank" rel="noopener">
+          <img src="/assets/linkedin.png" alt="LinkedIn">
+        </a>
+        <a href="https://francesslogistics.com" aria-label="https://francesslogistics.com" target="_blank" rel="noopener">
+          <img src="/assets/web.png" alt="Website">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.2
+    };
+    const scrollObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target); 
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll(".animate-on-scroll").forEach(el => scrollObserver.observe(el));
+
+    // Navbar Quote Button Visibility Toggle
+    const heroBtn = document.querySelector('.hero .btn');
+    const navQuote = document.querySelector('.nav-quote');
+
+    if (heroBtn && navQuote) {
+      // Create an observer to track the hero button
+      const navBtnObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Hero button is on screen -> hide navbar button
+            navQuote.classList.add('is-hidden');
+          } else {
+            // Hero button scrolled out of view -> show navbar button
+            navQuote.classList.remove('is-hidden');
+          }
+        });
+      }, { threshold: 0 }); // Trigger the moment the hero button is completely out of view
+      
+      navBtnObserver.observe(heroBtn);
+    }
+
+    // Burger / flyout menu toggle
+    const burgerBtn = document.getElementById("burgerBtn");
+    const flyoutMenu = document.getElementById("flyoutMenu");
+    if(burgerBtn && flyoutMenu){
+      burgerBtn.addEventListener("click", () => {
+        const isOpen = flyoutMenu.classList.toggle("open");
+        burgerBtn.classList.toggle("open", isOpen);
+        burgerBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+      flyoutMenu.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => {
+          flyoutMenu.classList.remove("open");
+          burgerBtn.classList.remove("open");
+          burgerBtn.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
+
+  });
+</script>
+
+</body>
+</html>

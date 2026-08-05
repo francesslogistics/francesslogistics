@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Quote — Francess Logistics Services OPC</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --navy:#00494B;
+    --navy-2:#013638;
+    --teal:#007F82;
+    --paper:#FFFFFF;
+    --offwhite:#F5F7F7;
+    --steel:#5C7274;
+    --orange:#FD8138;
+    --graphite:#232B2B;
+    --line: rgba(0,73,75,0.13);
+    --line-light: rgba(255,255,255,0.22);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--graphite);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+  h1,h2,h3{ font-family:'Poppins', sans-serif; color:var(--navy); line-height:1.15; }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  ul{list-style:none;}
+
+  .wrap{ max-width:1220px; margin:0 auto; padding:0 40px; }
+
+  .eyebrow{
+    display:flex; align-items:center; gap:14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--steel);
+    margin-bottom:18px;
+  }
+  .eyebrow::before{ content:''; width:3px; height:22px; background:var(--orange); flex-shrink:0; }
+  .eyebrow.on-dark{ color:rgba(255,255,255,0.75); }
+
+  /* ---------------- NAV ---------------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+  }
+  nav{ max-width:1220px; margin:0 auto; padding:16px 40px; display:flex; align-items:center; justify-content:flex-start; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-text{ font-family:'Poppins', sans-serif; line-height:1.2; }
+  .brand-text .b1{ font-size:15px; font-weight:700; letter-spacing:0.03em; color:var(--navy); }
+  .brand-text .b2{ font-size:11px; font-weight:600; letter-spacing:0.2em; color:var(--orange); }
+  .brand-mark{ width:40px; height:40px; object-fit:contain; }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--orange); outline-offset:3px; }
+
+  /* ---------------- BACK BUTTON ---------------- */
+  .nav-left{ display:flex; align-items:center; gap:22px; }
+  .back-btn{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:14px; font-weight:600; color:var(--navy);
+    padding:8px 14px 8px 8px; border-radius:4px;
+    transition:background .2s ease, color .2s ease;
+  }
+  .back-btn:hover{ background:var(--offwhite); color:var(--orange); }
+  .back-btn svg{ flex-shrink:0; }
+
+  /* ---------------- PAGE HERO ---------------- */
+  .page-hero{
+    position:relative;
+    padding:168px 0 70px;
+    background:#013638;
+    color:#fff;
+    overflow:hidden;
+  }
+  .page-hero-bg{
+    position:absolute; inset:0; z-index:0;
+    background-image:
+      linear-gradient(120deg, rgba(0,73,75,0.82), rgba(0,54,56,0.72)),
+      url('/assets/hero-banner.gif');
+    background-size: cover;
+    background-position: center;
+  }
+  .page-hero-content{ position:relative; z-index:2; max-width:640px; margin:0 auto; text-align:center; }
+  .page-hero h1{
+    font-size:clamp(30px,4.6vw,46px);
+    font-weight:800; color:#fff; letter-spacing:0.01em;
+  }
+  .page-hero p{ margin:18px auto 0; max-width:480px; font-size:16px; color:rgba(255,255,255,0.82); }
+
+  /* ---------------- FORM ---------------- */
+  .quote-section{ background:var(--offwhite); padding:80px 0 110px; }
+  .quote-card{
+    max-width:820px; margin:0 auto;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:48px;
+    box-shadow:0 20px 50px rgba(0,73,75,0.06);
+  }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field.full{ grid-column:1 / -1; }
+  .field label{ font-size:13px; font-weight:600; color:var(--navy); letter-spacing:0.02em; }
+  .field label .req{ color:var(--orange); }
+  .field input, .field select, .field textarea{
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    padding:12px 14px;
+    border:1.5px solid var(--line);
+    border-radius:4px;
+    color:var(--graphite);
+    background:var(--paper);
+    transition:border-color .2s ease;
+    width: 100%;
+    min-width: 0;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none; border-color:var(--teal);
+  }
+  .field textarea{ resize:vertical; min-height:110px; font-family:inherit; }
+  .field-hint{ font-size:12px; color:#8a9494; margin-top:6px; }
+
+  .phone-field{
+    display:flex; align-items:stretch;
+    border:1.5px solid var(--line); border-radius:4px;
+    transition:border-color .2s ease;
+  }
+  .phone-field:focus-within{ border-color:var(--teal); }
+  .phone-field .country-code{
+    border:none; border-right:1.5px solid var(--line);
+    background:var(--offwhite); padding:0 10px;
+    font-size:14px; font-family:'Inter', sans-serif; color:var(--graphite);
+    outline:none; max-width:110px;
+    border-radius:2.5px 0 0 2.5px;
+  }
+  .phone-field input{
+    border:none; flex:1; padding:12px 14px;
+    font-size:14.5px; outline:none; min-width:0;
+    border-radius:0 2.5px 2.5px 0;
+  }
+
+  /* ---------------- COUNTRY CODE DROPDOWN (real flag icons, not emoji —
+     emoji flags don't render on Windows, they fall back to plain letters) ---------------- */
+  .country-select{ position:relative; flex-shrink:0; }
+  .country-select-btn{
+    display:flex; align-items:center; gap:7px;
+    height:100%; border:none; border-right:1.5px solid var(--line);
+    background:var(--offwhite); padding:0 10px; cursor:pointer;
+    font-size:14px; font-family:'Inter', sans-serif; color:var(--graphite);
+    border-radius:2.5px 0 0 2.5px;
+  }
+  .country-select-btn .fi{ border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,0.08); flex-shrink:0; }
+  .country-select-btn .cc-caret{ width:9px; height:9px; opacity:0.5; flex-shrink:0; }
+  .country-select-list{
+    position:absolute; top:calc(100% + 6px); left:0; z-index:40;
+    width:230px; max-height:260px; overflow-y:auto;
+    background:#fff; border:1px solid var(--line); border-radius:6px;
+    box-shadow:0 10px 28px rgba(0,0,0,0.14); padding:6px; margin:0; list-style:none;
+  }
+  .country-select-list[hidden]{ display:none; }
+  .country-select-list li{
+    display:flex; align-items:center; gap:9px;
+    padding:8px 9px; border-radius:4px; cursor:pointer; font-size:13.5px; color:var(--graphite);
+  }
+  .country-select-list li:hover, .country-select-list li.active{ background:var(--offwhite); }
+  .country-select-list li .cc-name{ flex:1; }
+  .country-select-list li .cc-dial{ color:#7a8686; font-size:12.5px; }
+
+  .od-row{ display:flex; align-items:center; gap:12px; }
+  .od-row input{
+    flex:1; min-width:0;
+    font-family:'Inter', sans-serif; font-size:14.5px;
+    padding:12px 14px; border:1.5px solid var(--line); border-radius:4px;
+    transition:border-color .2s ease;
+  }
+  .od-row input:focus{ outline:none; border-color:var(--teal); }
+  .od-arrow{ flex-shrink:0; color:var(--orange); display:flex; align-items:center; }
+  @media (max-width:520px){
+    .od-row{ flex-direction:column; align-items:stretch; }
+    .od-arrow{ transform:rotate(90deg); align-self:center; }
+  }
+  .submit-row{ margin-top:36px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:14px; font-weight:600;
+    padding:14px 30px; border-radius:3px;
+    border:1.5px solid var(--orange); color:#fff;
+    background:var(--orange);
+    cursor:pointer;
+    transition:background .2s ease, border-color .2s ease;
+  }
+  .btn:hover{ background:#e3712c; border-color:#e3712c; }
+  .form-note{ font-size:13px; color:var(--steel); }
+  .success-msg{
+    display:none;
+    margin-top:28px; padding:16px 20px;
+    background:rgba(0,127,130,0.08);
+    border:1px solid var(--teal);
+    border-radius:4px;
+    color:var(--navy);
+    font-size:14.5px;
+  }
+  .success-msg.show{ display:block; }
+
+  .form-section{ margin-bottom:46px; }
+  .form-section:last-of-type{ margin-bottom:0; }
+  .form-section-title{
+    font-family:'Poppins', sans-serif; font-size:20px; font-weight:700;
+    color:var(--navy); margin-bottom:6px;
+  }
+  .form-section-sub{
+    width:36px; height:3px; background:var(--orange); margin-bottom:28px;
+  }
+  .q-label{ font-size:14.5px; font-weight:600; color:var(--graphite); margin-bottom:14px; }
+  .q-label .qn{ color:var(--teal); margin-right:4px; }
+  .q-label .req{ color:var(--orange); }
+
+  .radio-group{ display:flex; flex-direction:column; gap:14px; }
+  .radio-option{ display:flex; align-items:center; gap:12px; cursor:pointer; }
+  .radio-option input[type="radio"]{
+    appearance:none; -webkit-appearance:none;
+    width:19px; height:19px; border-radius:50%;
+    border:1.5px solid var(--steel);
+    position:relative; flex-shrink:0; cursor:pointer;
+    transition:border-color .2s ease;
+  }
+  .radio-option input[type="radio"]:checked{ border-color:var(--orange); }
+  .radio-option input[type="radio"]:checked::after{
+    content:''; position:absolute; inset:3px; border-radius:50%; background:var(--orange);
+  }
+  .radio-option span{ font-size:14.5px; color:var(--graphite); }
+  .radio-option .other-input{
+    margin-left:2px; flex:1; width: 100%; max-width:100%;
+    font-size:14px; padding:9px 12px;
+    border:1.5px solid var(--line); border-radius:4px;
+    font-family:'Inter', sans-serif;
+  }
+  .radio-option .other-input:disabled{ background:var(--offwhite); color:var(--steel); }
+
+  .upload-box{
+    border:1.5px dashed var(--line); border-radius:6px;
+    padding:22px; text-align:left; background:var(--offwhite);
+  }
+  .upload-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13.5px; font-weight:600; color:var(--navy);
+    background:#fff; border:1.5px solid var(--line);
+    padding:9px 16px; border-radius:4px; cursor:pointer;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .upload-btn:hover{ border-color:var(--teal); color:var(--teal); }
+  .upload-meta{ font-size:12px; color:var(--steel); margin-top:12px; line-height:1.6; }
+  .upload-filelist{ font-size:13px; color:var(--navy); margin-top:10px; }
+  .upload-filelist div{ margin-bottom:4px; }
+
+  .conditional-field{
+    max-height:0; overflow:hidden; margin-bottom:0 !important;
+    opacity:0;
+    transition:max-height .35s ease, opacity .3s ease, margin-bottom .35s ease;
+  }
+  .conditional-field.show{
+    max-height:400px; opacity:1; margin-bottom:34px !important;
+  }
+
+  @media (max-width:700px){
+    .wrap{ padding: 0 16px; }
+    .form-grid{ grid-template-columns:1fr; }
+    .quote-card{ padding:28px 20px; }
+  }
+
+  /* ---------------- FOOTER ---------------- */
+  footer{ background:var(--paper); color:var(--navy); padding:80px 0 28px; border-top:1px solid var(--line); }
+  .footer-grid{ display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:50px; padding-bottom:50px; border-bottom:1px solid var(--line); }
+  .footer-brand p{ margin-top:18px; color:var(--steel); font-size:14px; max-width:300px; }
+  .footer-col h4{ font-size:12.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--orange); margin-bottom:20px; }
+  .footer-col div{ margin-bottom:16px; }
+  .footer-col .k{ font-size:11px; color:var(--steel); letter-spacing:0.1em; text-transform:uppercase; }
+  .footer-col .v{ font-size:15px; margin-top:4px; display:inline-block; color:var(--navy); transition:color .2s ease; }
+  .footer-col a.v:hover{ color:var(--orange); }
+  .contact-row{ display:flex; align-items:flex-start; gap:14px; margin-bottom:18px; color:inherit; }
+  .contact-row:hover .v, .contact-row:hover .contact-icon{ color:var(--orange); }
+  .contact-icon{ flex-shrink:0; width:20px; height:20px; margin-top:2px; color:var(--navy); transition:color .2s ease; }
+  .contact-icon svg{ width:20px; height:20px; }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:24px; font-size:13px; color:var(--steel); flex-wrap:wrap; gap:16px; }
+  .social{ display:flex; gap:14px; }
+  .social a{ width:34px; height:34px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:border-color .2s ease, opacity .2s ease; }
+  .social a img{ width:15px; height:15px; opacity:0.8; transition:opacity .2s ease, filter .2s ease; }
+  .social a:hover{ border-color:var(--orange); }
+  .social a:hover img{ opacity:1; filter:invert(48%) sepia(90%) saturate(1000%) hue-rotate(340deg) brightness(1.05); }
+
+  @media (max-width:900px){
+    .page-hero{ padding:140px 0 60px; }
+    .footer-grid{ grid-template-columns:1fr; gap:36px; }
+    .back-btn span{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="nav-left">
+      <a class="back-btn" href="/" aria-label="Back to homepage">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <span>Back</span>
+      </a>
+      <a class="brand" href="/">
+        <picture>
+          <source srcset="/assets/logo.avif" type="image/avif">
+          <img class="brand-mark" src="/assets/logo.png" alt="FLS-OPC logo">
+        </picture>
+        <div class="brand-text">
+          <div class="b1">FRANCESS LOGISTICS</div>
+          <div class="b2">SERVICES OPC</div>
+        </div>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="wrap page-hero-content">
+    <h1>Request a Quote</h1>
+    <p>Tell us about your shipment and our team will get back to you with a tailored freight solution.</p>
+  </div>
+</section>
+
+<section class="quote-section">
+  <div class="wrap">
+    <div class="quote-card">
+      <form id="quoteForm">
+
+        <!-- Client Information -->
+        <div class="form-section">
+          <div class="form-section-title">Client Information</div>
+          <div class="form-section-sub"></div>
+
+          <div class="form-grid">
+            <div class="field full">
+              <label class="q-label" for="fullName"><span class="qn">1.</span> Full name (Last name, First name, Middle name.) <span class="req">*</span></label>
+              <input type="text" id="fullName" name="fullName" required placeholder="Enter your answer">
+            </div>
+            <div class="field full">
+              <label class="q-label" for="company"><span class="qn">2.</span> Company Name <span class="req">*</span></label>
+              <input type="text" id="company" name="company" required placeholder="Enter your answer">
+            </div>
+            <div class="field full">
+              <label class="q-label" for="phone"><span class="qn">3.</span> Contact Number <span class="req">*</span></label>
+              <div class="phone-field">
+                <div class="country-select" id="countryCodeWrap">
+                  <button type="button" class="country-select-btn" id="countryCodeBtn" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="fi fi-ph" id="countryCodeFlag"></span>
+                    <span id="countryCodeDial">+63</span>
+                    <svg class="cc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                  <ul class="country-select-list" id="countryCodeList" role="listbox" hidden>
+                    <li role="option" data-iso="ph" data-dial="+63" class="active"><span class="fi fi-ph"></span><span class="cc-name">Philippines</span><span class="cc-dial">+63</span></li>
+                    <li role="option" data-iso="us" data-dial="+1"><span class="fi fi-us"></span><span class="cc-name">United States</span><span class="cc-dial">+1</span></li>
+                    <li role="option" data-iso="gb" data-dial="+44"><span class="fi fi-gb"></span><span class="cc-name">United Kingdom</span><span class="cc-dial">+44</span></li>
+                    <li role="option" data-iso="au" data-dial="+61"><span class="fi fi-au"></span><span class="cc-name">Australia</span><span class="cc-dial">+61</span></li>
+                    <li role="option" data-iso="sg" data-dial="+65"><span class="fi fi-sg"></span><span class="cc-name">Singapore</span><span class="cc-dial">+65</span></li>
+                    <li role="option" data-iso="jp" data-dial="+81"><span class="fi fi-jp"></span><span class="cc-name">Japan</span><span class="cc-dial">+81</span></li>
+                    <li role="option" data-iso="kr" data-dial="+82"><span class="fi fi-kr"></span><span class="cc-name">South Korea</span><span class="cc-dial">+82</span></li>
+                    <li role="option" data-iso="cn" data-dial="+86"><span class="fi fi-cn"></span><span class="cc-name">China</span><span class="cc-dial">+86</span></li>
+                    <li role="option" data-iso="tr" data-dial="+90"><span class="fi fi-tr"></span><span class="cc-name">Turkey</span><span class="cc-dial">+90</span></li>
+                    <li role="option" data-iso="in" data-dial="+91"><span class="fi fi-in"></span><span class="cc-name">India</span><span class="cc-dial">+91</span></li>
+                    <li role="option" data-iso="ae" data-dial="+971"><span class="fi fi-ae"></span><span class="cc-name">UAE</span><span class="cc-dial">+971</span></li>
+                    <li role="option" data-iso="se" data-dial="+46"><span class="fi fi-se"></span><span class="cc-name">Sweden</span><span class="cc-dial">+46</span></li>
+                    <li role="option" data-iso="de" data-dial="+49"><span class="fi fi-de"></span><span class="cc-name">Germany</span><span class="cc-dial">+49</span></li>
+                    <li role="option" data-iso="fr" data-dial="+33"><span class="fi fi-fr"></span><span class="cc-name">France</span><span class="cc-dial">+33</span></li>
+                    <li role="option" data-iso="it" data-dial="+39"><span class="fi fi-it"></span><span class="cc-name">Italy</span><span class="cc-dial">+39</span></li>
+                    <li role="option" data-iso="es" data-dial="+34"><span class="fi fi-es"></span><span class="cc-name">Spain</span><span class="cc-dial">+34</span></li>
+                    <li role="option" data-iso="nl" data-dial="+31"><span class="fi fi-nl"></span><span class="cc-name">Netherlands</span><span class="cc-dial">+31</span></li>
+                    <li role="option" data-iso="id" data-dial="+62"><span class="fi fi-id"></span><span class="cc-name">Indonesia</span><span class="cc-dial">+62</span></li>
+                    <li role="option" data-iso="my" data-dial="+60"><span class="fi fi-my"></span><span class="cc-name">Malaysia</span><span class="cc-dial">+60</span></li>
+                    <li role="option" data-iso="th" data-dial="+66"><span class="fi fi-th"></span><span class="cc-name">Thailand</span><span class="cc-dial">+66</span></li>
+                    <li role="option" data-iso="vn" data-dial="+84"><span class="fi fi-vn"></span><span class="cc-name">Vietnam</span><span class="cc-dial">+84</span></li>
+                  </ul>
+                </div>
+                <input type="hidden" id="countryCode" value="+63">
+                <input type="tel" id="phone" name="phone" required placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel-national">
+              </div>
+            </div>
+            <div class="field full">
+              <label class="q-label" for="email"><span class="qn">4.</span> Email Address <span class="req">*</span></label>
+              <input type="email" id="email" name="email" required placeholder="Enter your answer">
+            </div>
+            <div class="field full">
+              <label class="q-label" for="address"><span class="qn">5.</span> Address <span class="req">*</span></label>
+              <input type="text" id="address" name="address" required placeholder="Enter your answer">
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipment Details -->
+        <div class="form-section">
+          <div class="form-section-title">Shipment Details</div>
+          <div class="form-section-sub"></div>
+
+          <div class="field full" style="margin-bottom:34px;">
+            <label class="q-label"><span class="qn">6.</span> Type of shipment <span class="req">*</span></label>
+            <div class="radio-group" id="shipmentTypeGroup">
+              <label class="radio-option">
+                <input type="radio" name="shipmentType" value="Import" required>
+                <span>Import</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="shipmentType" value="Export">
+                <span>Export</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="shipmentType" value="Other" id="shipmentOtherRadio">
+                <input type="text" class="other-input" id="shipmentOtherInput" name="shipmentTypeOther" placeholder="Other" disabled>
+              </label>
+            </div>
+          </div>
+
+          <div class="field full" style="margin-bottom:34px;">
+            <label class="q-label"><span class="qn">7.</span> Mode of transport <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="mode" value="Air" required>
+                <span>Air</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="mode" value="Sea">
+                <span>Sea</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="mode" value="Land">
+                <span>Land</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label class="q-label"><span class="qn">8.</span> Origin/Destination <span class="req">*</span></label>
+            <div class="od-row">
+              <input type="text" id="origin" name="origin" required placeholder="Origin" list="odDatalist" autocomplete="off">
+              <span class="od-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+              </span>
+              <input type="text" id="destination" name="destination" required placeholder="Destination" list="odDatalist" autocomplete="off">
+            </div>
+            <datalist id="odDatalist"></datalist>
+            <div class="field-hint" id="odHint">Select a mode of transport above first</div>
+          </div>
+        </div>
+
+        <!-- Cargo Details -->
+        <div class="form-section">
+          <div class="form-section-title">Cargo Details</div>
+          <div class="form-section-sub"></div>
+
+          <div class="field full" style="margin-bottom:34px;">
+            <label class="q-label" for="cargo"><span class="qn">9.</span> Description of goods/dimension <span class="req">*</span></label>
+            <textarea id="cargo" name="cargo" required placeholder="Enter your answer" style="min-height:100px;"></textarea>
+          </div>
+
+          <div class="field full" style="margin-bottom:34px;">
+            <label class="q-label"><span class="qn">10.</span> Dangerous Goods? <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="dangerousGoods" value="Yes" id="dgYes" required>
+                <span>Yes</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="dangerousGoods" value="No" id="dgNo">
+                <span>No</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field full conditional-field" id="dgAttachmentField">
+            <label class="q-label" for="dgAttachments"><span class="qn">10.5</span> UN Test Documents and Material Safety Data Sheet <span class="req">*</span></label>
+            <div class="upload-box">
+              <label class="upload-btn" for="dgAttachments">⇧ Upload file</label>
+              <input type="file" id="dgAttachments" name="dgAttachments" multiple
+                     accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,image/*,video/*,audio/*">
+              <div class="upload-meta">
+                No limit on number of files &nbsp;·&nbsp; Single file size limit: 100MB<br>
+                Allowed file types: Word, Excel, PPT, PDF, Image, Video, Audio
+              </div>
+              <div class="upload-filelist" id="dgFileList"></div>
+            </div>
+          </div>
+
+          <div class="field full" style="margin-bottom:34px;">
+            <label class="q-label"><span class="qn">11.</span> Shipment Quantity <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="quantityType" value="Pallets" required>
+                <span>Pallets</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="quantityType" value="Boxes">
+                <span>Boxes</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field full" style="margin-bottom:34px;">
+            <label class="q-label" for="quantityCount"><span class="qn">12.</span> No. of Pallets/ No. of Boxes <span class="req">*</span></label>
+            <input type="text" id="quantityCount" name="quantityCount" required placeholder="Enter your answer">
+          </div>
+
+          <div class="field full">
+            <label class="q-label" for="attachments"><span class="qn">13.</span> Proof of Goods <span class="req">*</span></label>
+            <div class="upload-box">
+              <label class="upload-btn" for="attachments">⇧ Upload file</label>
+              <input type="file" id="attachments" name="attachments" multiple required style="display:none;"
+                     accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,image/*,video/*,audio/*">
+              <div class="upload-meta">
+                File number limit: 3 &nbsp;·&nbsp; Single file size limit: 100MB<br>
+                Allowed file types: Word, Excel, PPT, PDF, Image, Video, Audio
+              </div>
+              <div class="upload-filelist" id="uploadFileList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn">Submit Request</button>
+          <span class="form-note">We usually respond within 1 business day.</span>
+        </div>
+
+        <div class="success-msg" id="successMsg">
+          Thank you! Your quote request has been received. Our team will reach out to you shortly at the email or phone number provided.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">
+          <picture>
+            <source srcset="/assets/logo.avif" type="image/avif">
+            <img class="brand-mark" src="/assets/logo.png" alt="FLS-OPC logo">
+          </picture>
+          <div class="brand-text">
+            <div class="b1">FRANCESS LOGISTICS</div>
+            <div class="b2">SERVICES OPC</div>
+          </div>
+        </div>
+        <p>Connecting countries one movement at a time — seamless freight and logistics services worldwide.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a class="contact-row" href="tel:+462302842">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5c0 9.4 6.6 16 16 16l2-4-6-2-2 2c-2.5-1.2-4-2.7-5.2-5.2l2-2-2-6z"/></svg></span>
+          <span class="v">+46 230 2842</span>
+        </a>
+        <a class="contact-row" href="tel:+639088813881">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5c0 9.4 6.6 16 16 16l2-4-6-2-2 2c-2.5-1.2-4-2.7-5.2-5.2l2-2-2-6z"/></svg></span>
+          <span class="v">+63 908 881 3881</span>
+        </a>
+        <a class="contact-row" href="mailto:cessamoroso@francesslogistics.com">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h18v14H3z"/><path d="M3 6l9 7 9-7"/></svg></span>
+          <span class="v">cessamoroso@francesslogistics.com</span>
+        </a>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <a class="contact-row" href="https://www.google.com/maps/search/?api=1&query=14.398404849755162,120.961666352482" target="_blank" rel="noopener">
+          <span class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.3 7-11.5A7 7 0 0 0 5 9.5C5 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
+          <span class="v" style="max-width:220px; display:inline-block;">FAJC Building 2/F Unit-4, Buhay na Tubig, Imus, Cavite, Philippines</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 by FLS-OPC</span>
+      <div class="social">
+        <a href="https://www.facebook.com/share/1UBRhAXXwr/?mibextid=wwXIfr" aria-label="Facebook" target="_blank" rel="noopener">
+          <img src="/assets/facebook.png" alt="Facebook">
+        </a>
+        <a href="https://www.tiktok.com/@francesslogistics" aria-label="TikTok" target="_blank" rel="noopener">
+          <img src="/assets/tiktok.png" alt="TikTok">
+        </a>
+        <a href="https://www.linkedin.com/in/ma-francisca-amoroso-677ab4380 " aria-label="LinkedIn" target="_blank" rel="noopener">
+          <img src="/assets/linkedin.png" alt="LinkedIn">
+        </a>
+        <a href="https://francesslogistics.com" aria-label="https://francesslogistics.com" target="_blank" rel="noopener">
+          <img src="/assets/web.png" alt="Website">
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Custom country-code dropdown (real flag icons via flag-icons lib —
+    // emoji flags don't render on Windows, they fall back to plain letters)
+    const ccBtn = document.getElementById("countryCodeBtn");
+    const ccList = document.getElementById("countryCodeList");
+    const ccFlag = document.getElementById("countryCodeFlag");
+    const ccDial = document.getElementById("countryCodeDial");
+    const ccHidden = document.getElementById("countryCode");
+    if(ccBtn && ccList){
+      ccBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const open = !ccList.hidden;
+        ccList.hidden = open;
+        ccBtn.setAttribute("aria-expanded", String(!open));
+      });
+      ccList.querySelectorAll("li").forEach(li => {
+        li.addEventListener("click", () => {
+          const iso = li.dataset.iso;
+          const dial = li.dataset.dial;
+          ccFlag.className = "fi fi-" + iso;
+          ccDial.textContent = dial;
+          ccHidden.value = dial;
+          ccList.querySelectorAll("li").forEach(o => o.classList.remove("active"));
+          li.classList.add("active");
+          ccList.hidden = true;
+          ccBtn.setAttribute("aria-expanded", "false");
+        });
+      });
+      document.addEventListener("click", () => { ccList.hidden = true; ccBtn.setAttribute("aria-expanded", "false"); });
+    }
+
+    // Contact Number: digits only
+    const phoneInput = document.getElementById("phone");
+    if(phoneInput){
+      phoneInput.addEventListener("input", () => {
+        phoneInput.value = phoneInput.value.replace(/[^0-9]/g, "");
+      });
+    }
+
+    // Dangerous Goods: show/hide 10.5 UN docs attachment
+    const dgYes = document.getElementById("dgYes");
+    const dgNo = document.getElementById("dgNo");
+    const dgField = document.getElementById("dgAttachmentField");
+    const dgAttachments = document.getElementById("dgAttachments");
+    if(dgYes && dgNo && dgField){
+      const updateDgField = () => {
+        if(dgYes.checked){
+          dgField.classList.add("show");
+          if(dgAttachments) dgAttachments.required = true;
+        } else {
+          dgField.classList.remove("show");
+          if(dgAttachments){ dgAttachments.required = false; dgAttachments.value = ""; }
+          const list = document.getElementById("dgFileList");
+          if(list) list.innerHTML = "";
+        }
+      };
+      dgYes.addEventListener("change", updateDgField);
+      dgNo.addEventListener("change", updateDgField);
+    }
+
+    // Enable the "Other" text field only when its radio is selected
+    const shipmentRadios = document.querySelectorAll('input[name="shipmentType"]');
+    const otherInput = document.getElementById("shipmentOtherInput");
+    shipmentRadios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        const isOther = radio.value === "Other" && radio.checked;
+        otherInput.disabled = !document.getElementById("shipmentOtherRadio").checked;
+      });
+    });
+    otherInput.addEventListener("focus", () => {
+      document.getElementById("shipmentOtherRadio").checked = true;
+      otherInput.disabled = false;
+    });
+
+    // Q8 Origin/Destination combobox — Air/Sea shows IATA airport codes,
+    // Land shows the 149 chartered cities of the Philippines (RA 7160 list).
+    const IATA_AIRPORTS = [
+      // Philippines — comprehensive
+      ["MNL","Manila (Ninoy Aquino Intl)"],["CRK","Clark Intl, Pampanga"],["CEB","Cebu (Mactan-Cebu Intl)"],
+      ["DVO","Davao Intl"],["ILO","Iloilo Intl"],["BCD","Bacolod (Silay)"],["PPS","Puerto Princesa"],
+      ["KLO","Kalibo Intl"],["MPH","Caticlan (Boracay)"],["ZAM","Zamboanga Intl"],["CGY","Cagayan de Oro (Laguindingan)"],
+      ["GES","General Santos Intl"],["TAG","Tagbilaran"],["TAC","Tacloban"],["DGT","Dumaguete"],
+      ["LAO","Laoag Intl"],["LGP","Legazpi"],["NAG","Naga"],["SFS","Subic Bay Intl"],
+      ["BXU","Butuan"],["SUG","Surigao"],["OZC","Ozamiz"],["CGM","Camiguin"],
+      ["MBT","Masbate"],["RXS","Roxas City"],["VRC","Virac, Catanduanes"],["USU","Busuanga (Coron)"],
+      ["SJI","San Jose, Mindoro"],["TDG","Tandag"],["JOL","Jolo"],["IAO","Siargao"],
+      ["WNP","Basco, Batanes"],["EUQ","Evelio Javier, Antique"],["CYP","Calbayog"],["OMC","Ormoc"],
+      ["CYZ","Cuyo"],["MRQ","Marinduque"],["PAG","Pagadian"],["DPL","Dipolog"],
+      // Asia-Pacific hubs
+      ["HKG","Hong Kong Intl"],["SIN","Singapore Changi"],["ICN","Seoul Incheon"],["NRT","Tokyo Narita"],
+      ["HND","Tokyo Haneda"],["KIX","Osaka Kansai"],["PVG","Shanghai Pudong"],["PEK","Beijing Capital"],
+      ["CAN","Guangzhou Baiyun"],["TPE","Taipei Taoyuan"],["BKK","Bangkok Suvarnabhumi"],["KUL","Kuala Lumpur Intl"],
+      ["CGK","Jakarta Soekarno-Hatta"],["SGN","Ho Chi Minh City"],["HAN","Hanoi Noi Bai"],["DEL","Delhi Indira Gandhi"],
+      ["BOM","Mumbai Chhatrapati Shivaji"],["DXB","Dubai Intl"],["DOH","Doha Hamad Intl"],["AUH","Abu Dhabi Intl"],
+      ["SYD","Sydney Kingsford Smith"],["MEL","Melbourne"],["BNE","Brisbane"],["AKL","Auckland"],
+      ["GUM","Guam Antonio B. Won Pat"],["SPN","Saipan"],["PVG","Shanghai Pudong"],
+      // North America
+      ["LAX","Los Angeles Intl"],["SFO","San Francisco Intl"],["JFK","New York JFK"],["ORD","Chicago O'Hare"],
+      ["SEA","Seattle-Tacoma"],["YVR","Vancouver Intl"],["ATL","Atlanta Hartsfield-Jackson"],["DFW","Dallas/Fort Worth"],
+      ["IAH","Houston Intercontinental"],["MIA","Miami Intl"],["ORD","Chicago O'Hare"],["YYZ","Toronto Pearson"],
+      ["HNL","Honolulu"],
+      // Europe / ME / Africa
+      ["LHR","London Heathrow"],["CDG","Paris Charles de Gaulle"],["FRA","Frankfurt"],["AMS","Amsterdam Schiphol"],
+      ["MAD","Madrid Barajas"],["FCO","Rome Fiumicino"],["IST","Istanbul"],["JNB","Johannesburg O.R. Tambo"],
+    ];
+    const PH_CITIES = [
+      "Alaminos","Angeles","Antipolo","Bacolod","Bacoor","Bago","Baguio","Bais","Balanga","Batac",
+      "Batangas City","Bayawan","Baybay","Bayugan","Biñan","Bislig","Bogo","Borongan","Butuan","Cabadbaran",
+      "Cabanatuan","Cabuyao","Cadiz","Cagayan de Oro","Calamba","Calapan","Calbayog","Caloocan","Candon","Canlaon",
+      "Carcar","Catbalogan","Cauayan","Cavite City","Cebu City","Cotabato City","Dagupan","Danao","Dapitan","Dasmariñas",
+      "Davao City","Digos","Dipolog","Dumaguete","El Salvador","Escalante","Gapan","General Santos","General Trias","Gingoog",
+      "Guihulngan","Himamaylan","Ilagan","Iligan","Iloilo City","Imus","Iriga","Isabela City","Island Garden City of Samal","Kabankalan",
+      "Kidapawan","Koronadal","La Carlota","Lamitan","Laoag","Lapu-Lapu","Las Piñas","Legazpi","Ligao","Lipa",
+      "Lucena","Maasin","Mabalacat","Makati","Malabon","Malaybalay","Malolos","Mandaluyong","Mandaue","Manila",
+      "Marawi","Marikina","Masbate City","Mati","Meycauayan","Muntinlupa","Muñoz","Naga (Camarines Sur)","Naga (Cebu)","Navotas",
+      "Olongapo","Ormoc","Oroquieta","Ozamiz","Pagadian","Palayan","Panabo","Parañaque","Pasay","Pasig",
+      "Passi","Puerto Princesa","Quezon City","Roxas City","Sagay","Samal","San Carlos (Negros Occidental)","San Carlos (Pangasinan)","San Fernando (La Union)","San Fernando (Pampanga)",
+      "San Jose (Nueva Ecija)","San Jose del Monte","San Juan","San Pablo","San Pedro","Santa Rosa","Santiago","Silay","Sipalay","Sorsogon City",
+      "Surigao City","Tabaco","Tabuk","Tacloban","Tacurong","Tagaytay","Tagbilaran","Tagum","Talisay (Cebu)","Talisay (Negros Occidental)",
+      "Tanauan","Tandag","Tangub","Tanjay","Tarlac City","Tayabas","Toledo","Trece Martires","Tuguegarao","Urdaneta",
+      "Valencia","Valenzuela","Victorias","Vigan","Zamboanga City",
+    ];
+    const odDatalist = document.getElementById("odDatalist");
+    const odHint = document.getElementById("odHint");
+    const modeRadios = document.querySelectorAll('input[name="mode"]');
+    function refreshOdDatalist() {
+      const checked = document.querySelector('input[name="mode"]:checked');
+      if (!checked) { odHint.textContent = "Select a mode of transport above first"; odDatalist.innerHTML = ""; return; }
+      if (checked.value === "Land") {
+        odDatalist.innerHTML = PH_CITIES.map(c => `<option value="${c}">`).join("");
+        odHint.textContent = "Showing the 149 cities of the Philippines";
+      } else {
+        odDatalist.innerHTML = IATA_AIRPORTS.map(([code, name]) => `<option value="${code}">${name}</option>`).join("");
+        odHint.textContent = "Showing IATA airport codes (type the code or airport/city name)";
+      }
+    }
+    modeRadios.forEach(r => r.addEventListener("change", refreshOdDatalist));
+    refreshOdDatalist();
+
+    // Show selected file names
+    const fileInput = document.getElementById("attachments");
+    const fileList = document.getElementById("uploadFileList");
+    if(fileInput){
+      fileInput.addEventListener("change", () => {
+        fileList.innerHTML = "";
+        Array.from(fileInput.files).slice(0, 3).forEach(f => {
+          const row = document.createElement("div");
+          row.textContent = "📎 " + f.name;
+          fileList.appendChild(row);
+        });
+      });
+    }
+
+    const dgFileInput = document.getElementById("dgAttachments");
+    const dgFileList = document.getElementById("dgFileList");
+    if(dgFileInput){
+      dgFileInput.addEventListener("change", () => {
+        dgFileList.innerHTML = "";
+        Array.from(dgFileInput.files).forEach(f => {
+          const row = document.createElement("div");
+          row.textContent = "📎 " + f.name;
+          dgFileList.appendChild(row);
+        });
+      });
+    }
+      function formatTIN(e) {
+        // Remove all non-digit characters
+        let val = e.target.value.replace(/\D/g, ''); 
+        let formatted = '';
+        
+        if (val.length > 0) formatted += val.substring(0, 3);
+        if (val.length > 3) formatted += '-' + val.substring(3, 6);
+        if (val.length > 6) formatted += '-' + val.substring(6, 9);
+        if (val.length > 9) formatted += '-' + val.substring(9, 14);
+        
+        e.target.value = formatted;
+      }
+    const quoteForm = document.getElementById("quoteForm");
+    const successMsg = document.getElementById("successMsg");
+    if(quoteForm){
+      quoteForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const countryCode = document.getElementById("countryCode");
+        const phoneNumber = document.getElementById("phone");
+        const shipmentTypeChecked = quoteForm.querySelector('input[name="shipmentType"]:checked');
+        const modeChecked = quoteForm.querySelector('input[name="mode"]:checked');
+        const quantityTypeChecked = quoteForm.querySelector('input[name="quantityType"]:checked');
+        const dgChecked = quoteForm.querySelector('input[name="dangerousGoods"]:checked');
+
+        const fd = new FormData();
+        fd.append("full_name", (document.getElementById("fullName") || {}).value || "");
+        fd.append("company", (document.getElementById("company") || {}).value || "");
+        fd.append("phone", (countryCode ? countryCode.value : "") + " " + ((phoneNumber || {}).value || ""));
+        fd.append("email", (document.getElementById("email") || {}).value || "");
+        fd.append("address", (document.getElementById("address") || {}).value || "");
+        fd.append("shipment_type", shipmentTypeChecked ? shipmentTypeChecked.value : "");
+        fd.append("shipment_type_other", (document.getElementById("shipmentOtherInput") || {}).value || "");
+        fd.append("mode", modeChecked ? modeChecked.value : "");
+        fd.append("origin", (document.getElementById("origin") || {}).value || "");
+        fd.append("destination", (document.getElementById("destination") || {}).value || "");
+        fd.append("cargo", (document.getElementById("cargo") || {}).value || "");
+        fd.append("dangerous_goods", dgChecked ? dgChecked.value : "");
+        fd.append("quantity_type", quantityTypeChecked ? quantityTypeChecked.value : "");
+        fd.append("quantity_count", (document.getElementById("quantityCount") || {}).value || "");
+        const dgFiles = document.getElementById("dgAttachments");
+        if (dgFiles) Array.from(dgFiles.files).forEach(f => fd.append("dgAttachments", f));
+        const proofFiles = document.getElementById("attachments");
+        if (proofFiles) Array.from(proofFiles.files).forEach(f => fd.append("attachments", f));
+
+        // This is a public, unauthenticated POST — the Inquiry endpoint allows
+        // AllowAny on create only, so this never needs a login/csrf token.
+        // FormData sets its own multipart Content-Type header automatically.
+        fetch("/api/inquiries/", {
+          method: "POST",
+          body: fd,
+        }).catch(() => { /* network hiccup — still show success below so the
+          visitor isn't blocked; staff can follow up manually if it didn't land */ });
+
+        successMsg.classList.add("show");
+        quoteForm.reset();
+        fileList.innerHTML = "";
+        if(dgFileList) dgFileList.innerHTML = "";
+        if(dgField) dgField.classList.remove("show");
+        otherInput.disabled = true;
+        successMsg.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
