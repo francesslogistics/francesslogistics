@@ -396,7 +396,7 @@
     #toast.show { bottom: 22px; opacity: 1; }
 
     .spin { animation: fl-spin 0.9s linear infinite; }
-    @page { size: A4; margin: 0; }
+    @page { size: 8.77in 11in; margin: 0; }
     @media print {
       /* 1. Reset body and dashboard containers so they don't stretch the paper */
       html, body { height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
@@ -421,11 +421,11 @@
 
       /* 4. Anchor the sheet perfectly to the top-left of the page */
       #quotation-sheet { 
-        position:relative; 
-        width:595.32pt; 
-        height:841.92pt; 
-        color:#16191A; 
-        font-size:10.5pt; 
+        position: relative; 
+        width: 631.44pt; 
+        height: 760pt; 
+        color: #16191A; 
+        font-size: 10.5pt; 
         font-family: 'Calibri Light', Calibri, sans-serif; 
       }
 
@@ -973,10 +973,10 @@
           <button type="button" class="btn btn-outline" style="font-size:10.5px; padding:4px 9px;" onclick="resetQuotationCalibration()">Reset</button>
         </div>  
 
-          <div id="quotation-sheet-wrap" style="position:relative; width:595.32pt; height:841.92pt; margin:0 auto; box-shadow:0 1px 8px rgba(22,25,26,0.15); background-color:#fff; background-image:url('/aassets/preview.webp'); background-position:center top; background-repeat:no-repeat; background-size:100% 698pt; overflow:hidden;">
+          <div id="quotation-sheet-wrap" style="position:relative; width:631.44pt; height:760pt; margin:0 auto; box-shadow:0 1px 8px rgba(22,25,26,0.15); background-color:#fff; background-position:center top; background-repeat:no-repeat; background-size:100% 760pt; overflow:hidden;">
           <button type="button" id="qi-paper-edit-btn" class="qs-noprint btn btn-outline" style="display:none; position:absolute; top:10px; right:10px; z-index:5; font-size:11px; padding:5px 10px;" onclick="editCurrentQuotationInvoice()"><i data-lucide="pencil" style="width:11px;"></i> Edit</button>
-          <div id="quotation-sheet" style="position:relative; width:595.32pt; height:841.92pt; color:#16191A; font-size:9.5pt; font-family: 'Calibri Light', Calibri, sans-serif;">
-            <!-- filled by renderQuotationSheet() with absolutely-positioned .qf value fields -->
+          <div id="quotation-sheet" style="position:relative; width:631.44pt; height:760pt; color:#16191A; font-size:9.5pt; font-family: 'Calibri Light', Calibri, sans-serif;">
+            <!-- filled by renderQuotationSheet() -->
           </div>
         </div>
       </div> 
@@ -5157,7 +5157,7 @@ function previewInquiryDocument(src) {
     // layer of the two reference PDFs you supplied (SI.pdf / SOA.pdf) — both
     // are A4 (595.32 × 841.92 pt), so we render at that exact size in "pt"
     // CSS units (1pt = 1/72in, same unit the PDF uses) rather than guessing.
-    const QS_PAGE = { width: 595.32, height: 841.92 };
+    const QS_PAGE = { width: 631.44, height: 760 };
     const QS_COORDS = {
           si: {
             refNo: { x: 470.0, y: 108.0 }, 
@@ -5177,15 +5177,16 @@ function previewInquiryDocument(src) {
             er: { x: 490.0, y: 220.0 }, 
 	          descGoods: { x: 112.0, y: 243.0 },
             nonVatLabel: { x: 100.0, y: 280.0 }, 
-            nonVatItemsStart: { x: 110.0, xAmtR: 530.0, y: 297.0, step: 18.0, slots: 8 }, 
+            nonVatItemsStart: { x: 110.0, xAmtR: 530.0, y: 297.0, step: 10.0, slots: 8 }, 
             vatLabel: { x: 100.0, y: 390.0 },
-            vatItemsStart: { x: 110.0, xAmtR: 530.0, y: 407.0, step: 18.0, slots: 6 },
-            vatSubtotal: { x: 219.0, y: 520.0 }, 
-            vatAmount: { x: 219.0, y: 540.0 }, 
-            zeroRated: { x: 219.0, y: 560.0 }, 
-            nonVatSubtotal: { x: 219.0, y: 580.0 }, 
-            amountWords: { x: 60.0, y: 610.0 }, 
-            grandTotal: { xR: 545.0, y: 610.0 }, 
+            vatItemsStart: { x: 110.0, xAmtR: 530.0, y: 407.0, step: 10.0, slots: 6 },
+            vatSubtotal: { x: 219.0, y: 518.0 }, 
+            vatAmount: { x: 219.0, y: 538.0 }, 
+            zeroRated: { x: 219.0, y: 558.0 }, 
+            nonVatSubtotal: { x: 219.0, y: 578.0 },
+            totalSales: { xR: 540.0, y: 505.0 }, 
+            amountWords: { x: 60.0, y: 608.0 }, 
+            grandTotal: { xR: 545.0, y: 605.0 }, 
           },
           soa: {
             soldName: { x: 107.0, y: 116.0 },
@@ -5283,7 +5284,7 @@ function previewInquiryDocument(src) {
         html += qf(C.terms, r.creditTerms || '');
         html += qf(C.reference, r.jobRef || r.soaNumber || r.awb || '');
         if (nonVatRows.some(row => row.desc || row.amount)) {
-          html += qf(C.nonVatLabel, 'NON VATABLE', { bold: true, underline: true });
+          html += qf(C.nonVatLabel, 'NON VATABLE', { bold: true, underline: true, fontSize: '12pt' });
         }
         nonVatRows.slice(0, C.nonVatItemsStart.slots).forEach((row, i) => {
           const y = C.nonVatItemsStart.y + i * C.nonVatItemsStart.step;
@@ -5310,30 +5311,52 @@ function previewInquiryDocument(src) {
         html += qf(C.mbl, r.mbl || '');
         html += qf(C.etdEta, r.etdEta || r.etd || '');
         html += qf(C.er, r.er || '');
-        if (nonVatRows.some(row => row.desc || row.amount)) {
-          html += qf(C.nonVatLabel, 'NON VATABLE', { bold: true, underline: true });
+        const validNonVat = nonVatRows.filter(row => row.desc || row.amount);
+        const validVat = vatRows.filter(row => row.desc || row.amount);
+
+        const rowHeight = 18.0; 
+        
+        let currentY = C.nonVatLabel.y; // Start at the first available row
+
+        if (validNonVat.length > 0) {
+          html += qf({ x: C.nonVatLabel.x, y: currentY }, 'NON VATABLE', { bold: true, underline: true, fontSize: '12pt' });
+          currentY += rowHeight; // Drop exactly 1 row
+          
+          validNonVat.forEach((row) => {
+            html += qf({ x: C.nonVatItemsStart.x, y: currentY }, (row.desc || '').toUpperCase(), { bold: true });
+            html += qf({ xR: C.nonVatItemsStart.xAmtR, y: currentY }, money(row.amount), { bold: true });
+            currentY += rowHeight; // Drop exactly 1 row
+          });
+          
+          currentY += (rowHeight - 8); 
         }
-        nonVatRows.slice(0, C.nonVatItemsStart.slots).forEach((row, i) => {
-          const y = C.nonVatItemsStart.y + i * C.nonVatItemsStart.step;
-          html += qf({ x: C.nonVatItemsStart.x, y }, (row.desc || '').toUpperCase());
-          html += qf({ xR: C.nonVatItemsStart.xAmtR, y }, money(row.amount));
-        });
-        if (vatRows.some(row => row.desc || row.amount)) {
-          html += qf(C.vatLabel, 'VATABLE', { bold: true, underline: true });
+
+        if (validVat.length > 0) {
+          // If there were no non-vatable items, start VATABLE right at the top
+          if (validNonVat.length === 0) currentY = C.nonVatLabel.y;
+          
+          html += qf({ x: C.vatLabel.x, y: currentY }, 'VATABLE', { bold: true, underline: true, fontSize: '12pt' });
+          currentY += rowHeight; // Drop exactly 1 row
+          
+          validVat.forEach((row) => {
+            html += qf({ x: C.vatItemsStart.x, y: currentY }, (row.desc || '').toUpperCase(), { bold: true });
+            html += qf({ xR: C.vatItemsStart.xAmtR, y: currentY }, money(row.amount), { bold: true });
+            currentY += rowHeight; // Drop exactly 1 row
+          });
         }
-        vatRows.slice(0, C.vatItemsStart.slots).forEach((row, i) => {
-          const y = C.vatItemsStart.y + i * C.vatItemsStart.step;
-          html += qf({ x: C.vatItemsStart.x, y }, (row.desc || '').toUpperCase());
-          html += qf({ xR: C.vatItemsStart.xAmtR, y }, money(row.amount));
-        });
         html += qf(C.vatSubtotal, r.vatable ? money(r.vatable) : '');
         html += qf(C.vatAmount, record ? money(t.vat) : '');
         html += qf(C.zeroRated, r.zeroRated ? money(r.zeroRated) : '');
         html += qf(C.nonVatSubtotal, r.exempt ? money(r.exempt) : '');
+        
+        // Print Total Sales (VATable Sales + 12% VAT)
+        const printedTotalSales = (r.vatable || 0) + t.vat;
+        html += qf(C.totalSales, record && printedTotalSales ? money(printedTotalSales) : '');
+
         html += qf(C.amountWords, record ? amountInWordsPH(t.totalDue) : '', { bold: true, fontSize: '7pt' });
         html += qf(C.grandTotal, record ? money(t.totalDue) : '', { bold: true, fontSize: '12pt' });
-        }
 
+       }
       sheet.innerHTML = html;
       applyQuotationCalibration();
     }
