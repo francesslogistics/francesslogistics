@@ -117,11 +117,12 @@ def accounts_list_view(request):
     return Response({"accounts": accounts, "my_rank": my_profile.rank, "position_choices": Profile.Position.values})
 
 
-@api_view(["PATCH"])
+@api_view(["PATCH", "DELETE"])
 @permission_classes([IsAuthenticated])
 def accounts_detail_view(request, user_id):
-    """Change another user's position — only allowed if the requester
-    outranks the target's CURRENT position, and only to a position that
+    """Change — or permanently delete — another user's account. Only allowed
+    if the requester outranks the target's CURRENT position (same rule for
+    both actions), and a position change may only assign something that
     still ranks below the requester's own (no promoting someone above or
     to your own level)."""
     my_profile, _ = Profile.objects.get_or_create(user=request.user)
@@ -130,9 +131,17 @@ def accounts_detail_view(request, user_id):
         return Response({"detail": "Account not found."}, status=status.HTTP_404_NOT_FOUND)
     if my_profile.rank <= target_profile.rank:
         return Response(
-            {"detail": "You don't have permission to change this account's position."},
+            {"detail": "You don't have permission to modify this account."},
             status=status.HTTP_403_FORBIDDEN,
         )
+
+    if request.method == "DELETE":
+        # Deletes the underlying Django User row. Profile cascades (OneToOne,
+        # on_delete=CASCADE) and so does the auth Token, so this is a real,
+        # permanent removal from the database — not a soft/trash delete.
+        target_profile.user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     serializer = AccountUpdateSerializer(target_profile, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     new_position = serializer.validated_data.get("position", target_profile.position)

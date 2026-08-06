@@ -1398,6 +1398,7 @@
                 <th style="padding: 10px 16px; font-size: 10.5px; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.6px;">Name</th>
                 <th style="padding: 10px 16px; font-size: 10.5px; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.6px;">Username</th>
                 <th style="padding: 10px 16px; font-size: 10.5px; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.6px;">Position</th>
+                <th style="padding: 10px 16px; width:40px;"></th>
               </tr>
             </thead>
             <tbody id="accounts-table-body"></tbody>
@@ -2511,7 +2512,7 @@
       const newAccBtn = document.getElementById('btn-new-account');
       if (newAccBtn) newAccBtn.style.display = (me.position === 'CEO' || me.rank >= 3) ? 'flex' : 'none';
 
-      if (!backendConnected) { body.innerHTML = `<tr><td colspan="4" style="padding:20px 16px; color:var(--text-light); font-size:12px;">Not connected to the backend.</td></tr>`; return; }
+      if (!backendConnected) { body.innerHTML = `<tr><td colspan="5" style="padding:20px 16px; color:var(--text-light); font-size:12px;">Not connected to the backend.</td></tr>`; return; }
       try {
         const res = await apiRequest('accounts/users/', 'GET');
         const positions = res.position_choices || ['CEO', 'Sales Account Manager', 'Sales Account Executive', 'Intern'];
@@ -2527,10 +2528,27 @@
                 ${positions.map(p => `<option value="${p}" ${p === a.position ? 'selected' : ''}>${p}</option>`).join('')}
               </select>
             </td>
+            <td style="padding: 9px 16px; text-align:center;">
+              ${a.can_edit ? `<button type="button" onclick="deleteAccount(${a.id}, '${(a.name || '').replace(/'/g, "\\'")}')" title="Delete account" style="background:none; border:none; cursor:pointer; color:var(--err); padding:4px; display:inline-flex; align-items:center;"><i data-lucide="trash-2" style="width:14px;"></i></button>` : ''}
+            </td>
           </tr>`).join('');
+        safeCreateIcons();
       } catch (err) {
-        body.innerHTML = `<tr><td colspan="4" style="padding:20px 16px; color:var(--text-light); font-size:12px;">Couldn't load accounts.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="5" style="padding:20px 16px; color:var(--text-light); font-size:12px;">Couldn't load accounts.</td></tr>`;
       }
+    }
+
+    function deleteAccount(userId, name) {
+      openConfirmModal(`Permanently delete the account "${name}"? This removes it from the database entirely and can't be undone.`, async () => {
+        try {
+          await apiRequest(`accounts/users/${userId}/`, 'DELETE');
+          showToast('Account deleted');
+          loadAccountsList();
+        } catch (err) {
+          console.error('Account Delete Error:', err);
+          showToast("Couldn't delete — you may not outrank this account");
+        }
+      });
     }
 
     function openNewAccountModal() {
