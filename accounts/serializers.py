@@ -34,9 +34,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class SelfProfileSerializer(serializers.ModelSerializer):
     """Used by /accounts/me/ — a user editing their OWN profile can change
-    their photo, but never their own position (that's fixed hierarchy, only
-    changeable by a higher-ranked account via /accounts/users/<id>/)."""
-    username = serializers.CharField(source="user.username", read_only=True)
+    their photo, name, and username, but never their own position (that's
+    fixed hierarchy, only changeable by a higher-ranked account via
+    /accounts/users/<id>/)."""
+    username = serializers.CharField(source="user.username")
     name = serializers.SerializerMethodField()
     rank = serializers.IntegerField(read_only=True)
     position = serializers.CharField(read_only=True)
@@ -47,6 +48,22 @@ class SelfProfileSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return obj.display_name
+
+    def validate_username(self, value):
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Username can't be blank.")
+        taken = User.objects.filter(username=value).exclude(pk=self.instance.user_id).exists()
+        if taken:
+            raise serializers.ValidationError("That username is already taken.")
+        return value
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", None)
+        if user_data and "username" in user_data:
+            instance.user.username = user_data["username"]
+            instance.user.save(update_fields=["username"])
+        return super().update(instance, validated_data)
 
 
 class AccountUpdateSerializer(serializers.ModelSerializer):

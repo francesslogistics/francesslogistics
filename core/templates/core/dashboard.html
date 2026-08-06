@@ -1517,6 +1517,11 @@
           <label style="font-size:10.5px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Name</label>
           <input id="epf-name" type="text" style="width:100%; margin-top:4px; padding:8px 10px; border-radius:7px; border:1px solid var(--bdr); font-size:12.5px; font-family:inherit;">
         </div>
+        <div>
+          <label style="font-size:10.5px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Username</label>
+          <input id="epf-username" type="text" autocomplete="off" style="width:100%; margin-top:4px; padding:8px 10px; border-radius:7px; border:1px solid var(--bdr); font-size:12.5px; font-family:inherit;">
+          <div id="epf-username-error" style="display:none; font-size:10.5px; color:var(--err); margin-top:4px;"></div>
+        </div>
         <div style="display:flex; gap:8px; margin-top:6px;">
           <button type="button" class="btn btn-outline" style="flex:1; justify-content:center;" onclick="closeEditProfileFieldsModal()">Cancel</button>
           <button type="button" class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveProfileDetails()">Save</button>
@@ -2370,6 +2375,9 @@
     function openEditProfileFieldsModal() {
       const user = getCurrentUser();
       document.getElementById('epf-name').value = user.name || '';
+      document.getElementById('epf-username').value = user.username || '';
+      const errorBox = document.getElementById('epf-username-error');
+      if (errorBox) { errorBox.style.display = 'none'; errorBox.innerText = ''; }
       const preview = document.getElementById('epf-photo-preview');
       preview.style.backgroundImage = user.photo ? `url(${user.photo})` : 'none';
       preview.dataset.photo = user.photo || '';
@@ -2391,14 +2399,30 @@
     async function saveProfileDetails() {
       const user = getCurrentUser();
       const name = document.getElementById('epf-name').value.trim();
+      const username = document.getElementById('epf-username').value.trim();
       const photo = document.getElementById('epf-photo-preview').dataset.photo || user.photo || '';
-      const updated = { ...user, name, photo };
-      localStorage.setItem('fl-user', JSON.stringify(updated));
-      if (backendConnected) {
-        // Now sending the name along with the photo so the database actually updates
-        try { await apiRequest('accounts/me/', 'PATCH', { photo, name }); }
-        catch (err) { warnBackend('update profile', err); }
+      const errorBox = document.getElementById('epf-username-error');
+      if (errorBox) { errorBox.style.display = 'none'; errorBox.innerText = ''; }
+
+      if (!username) {
+        if (errorBox) { errorBox.innerText = "Username can't be blank."; errorBox.style.display = 'block'; }
+        else showToast("Username can't be blank.");
+        return;
       }
+
+      if (backendConnected) {
+        try {
+          await apiRequest('accounts/me/', 'PATCH', { photo, name, username });
+        } catch (err) {
+          const msg = /already taken/i.test(err.message) ? 'That username is already taken.' : "Couldn't update username — try again.";
+          if (errorBox) { errorBox.innerText = msg; errorBox.style.display = 'block'; }
+          else showToast(msg);
+          return;
+        }
+      }
+
+      const updated = { ...user, name, username, photo };
+      localStorage.setItem('fl-user', JSON.stringify(updated));
       renderSidebarProfile();
       renderProfilePage();
       closeEditProfileFieldsModal();
