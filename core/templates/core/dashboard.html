@@ -2551,7 +2551,7 @@
       
       if (backendConnected) {
         try {
-          await apiRequest('accounts/users/', 'POST', { name, username, password, position });
+          await apiRequest('accounts/register/', 'POST', { name, username, password, position });
           showToast('Account created successfully');
           closeNewAccountModal();
           loadAccountsList();
