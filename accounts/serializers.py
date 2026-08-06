@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .models import Profile
+from .models import LoginActivity, Profile
 
 
 class LoginSerializer(serializers.Serializer):
@@ -112,3 +112,13 @@ class RegisterSerializer(serializers.Serializer):
         )
         Profile.objects.create(user=user, position=position)
         return user
+
+class LoginActivitySerializer(serializers.ModelSerializer):
+    """Powers the "Activity Logs" table on View Profile — one row per login,
+    with the resolved location (blank if the lookup failed or the IP was
+    local/private) rather than the raw IP address itself."""
+    location = serializers.CharField(source="location_label", read_only=True)
+
+    class Meta:
+        model = LoginActivity
+        fields = ["id", "location", "city", "region", "country", "created_at"]

@@ -49,3 +49,31 @@ class Profile(models.Model):
     def display_name(self):
         full = self.user.get_full_name()
         return full or self.user.username
+
+
+class LoginActivity(models.Model):
+    """One row per successful login — powers the "Activity Logs" table on
+    View Profile. Only login is tracked (not logout); city/region/country
+    are resolved from the request's IP address at login time (see
+    accounts/utils.py) and best-effort — if the lookup fails or the IP is a
+    local/private address, those fields are just left blank rather than
+    blocking the login itself."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="login_activity", on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    city = models.CharField(max_length=100, blank=True, default="")
+    region = models.CharField(max_length=100, blank=True, default="")
+    country = models.CharField(max_length=100, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        where = self.city or self.country or "unknown location"
+        return f"{self.user.username} logged in from {where} at {self.created_at}"
+
+    @property
+    def location_label(self):
+        parts = [p for p in [self.city, self.region, self.country] if p]
+        return ", ".join(parts) if parts else "Unknown location"

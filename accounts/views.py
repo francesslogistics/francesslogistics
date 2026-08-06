@@ -10,11 +10,13 @@ from .models import Profile
 from .serializers import (
     AccountUpdateSerializer,
     ChangePasswordSerializer,
+    LoginActivitySerializer,
     LoginSerializer,
     ProfileSerializer,
     RegisterSerializer,
     SelfProfileSerializer,
 )
+from .utils import log_login_activity
 
 
 @api_view(["GET"])
@@ -33,6 +35,11 @@ def login_view(request):
     user = serializer.validated_data["user"]
     profile, _ = Profile.objects.get_or_create(user=user)
     token, _ = Token.objects.get_or_create(user=user)
+    try:
+        log_login_activity(request, user)
+    except Exception:
+        # A logging hiccup must never block someone from signing in.
+        pass
     return Response({
         "token": token.key,
         "name": profile.display_name,
@@ -167,3 +174,15 @@ def accounts_detail_view(request, user_id):
         )
     serializer.save()
     return Response(ProfileSerializer(target_profile).data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_login_activity_view(request):
+    """Powers the "Activity Logs" table on View Profile — every login the
+    current user has made (most recent first), with the resolved city/region/
+    country from that login's IP address. Logout isn't tracked, only login.
+    Capped at the most recent 50 so the table can't grow unbounded."""
+    from .models import LoginActivity
+
+    entries = LoginActivity.objects.filter(user=request.user).order_by("-created_at")[:50]
+    return Response(LoginActivitySerializer(entries, many=True).data)

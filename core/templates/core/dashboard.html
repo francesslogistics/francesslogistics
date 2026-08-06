@@ -1341,7 +1341,7 @@
         </div>
 
         <div class="card" style="overflow:hidden; margin-bottom:16px;">
-          <div style="padding:14px 16px; border-bottom:1px solid var(--bdr); font-size:12.5px; font-weight:700; color:var(--text-dark);">Billings you've inserted</div>
+          <div style="padding:14px 16px; border-bottom:1px solid var(--bdr); font-size:12.5px; font-weight:700; color:var(--text-dark);">Billing Invoices</div>
           <table style="width:100%; border-collapse:collapse;">
             <thead>
               <tr style="background: var(--bg); text-align:left;">
@@ -1350,6 +1350,7 @@
                 <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Amount</th>
                 <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Status</th>
                 <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Invoice date</th>
+                <th style="padding:8px 16px; width:60px;"></th>
               </tr>
             </thead>
             <tbody id="profile-billings-table-body"></tbody>
@@ -1358,19 +1359,17 @@
         </div>
 
         <div class="card" style="overflow:hidden;">
-          <div style="padding:14px 16px; border-bottom:1px solid var(--bdr); font-size:12.5px; font-weight:700; color:var(--text-dark);">Billing invoices you've made (Quotation)</div>
+          <div style="padding:14px 16px; border-bottom:1px solid var(--bdr); font-size:12.5px; font-weight:700; color:var(--text-dark);">Activity Logs</div>
           <table style="width:100%; border-collapse:collapse;">
             <thead>
               <tr style="background: var(--bg); text-align:left;">
-                <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Invoice No.</th>
-                <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Sold to</th>
-                <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Issued date</th>
-                <th style="padding:8px 16px; width:60px;"></th>
+                <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Location</th>
+                <th style="padding:8px 16px; font-size:10.5px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:0.6px;">Logged in</th>
               </tr>
             </thead>
-            <tbody id="profile-quotations-table-body"></tbody>
+            <tbody id="profile-activity-table-body"></tbody>
           </table>
-          <div id="profile-quotations-empty" style="display:none; padding:20px 16px; color:var(--text-light); font-size:12px;">No billing invoices made yet on this account.</div>
+          <div id="profile-activity-empty" style="display:none; padding:20px 16px; color:var(--text-light); font-size:12px;">No login activity recorded yet.</div>
         </div>
       </div>
 
@@ -2373,7 +2372,7 @@
       preview.innerText = user.photo ? '' : initialsFor(user.name);
       renderProfileAgentsTable(user);
       renderProfileBillingsTable(user);
-      renderProfileQuotationsTable(user);
+      loadProfileActivityLogs();
     }
     function openEditProfileFieldsModal() {
       const user = getCurrentUser();
@@ -2476,26 +2475,36 @@
           <td style="padding:8px 16px; font-size:11.5px; color:var(--text-light);">${fmtCurrency(r.amt, r.cur)}</td>
           <td style="padding:8px 16px;">${billingStatusBadge(r.status, r.id)}</td>
           <td style="padding:8px 16px; font-size:11px; color:var(--text-light);">${r.inv ? fmtLongDate(r.inv) : '—'}</td>
-        </tr>`).join('');
-    }
-    function renderProfileQuotationsTable(user) {
-      const body = document.getElementById('profile-quotations-table-body');
-      const empty = document.getElementById('profile-quotations-empty');
-      if (!body) return;
-      // Manually-typed "New billing invoice" records don't carry a creator
-      // name today, so this shows everything made on this account/device —
-      // narrow it down once quotationInvoices track createdByName too.
-      const mine = quotationInvoices;
-      if (!mine.length) { body.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
-      if (empty) empty.style.display = 'none';
-      body.innerHTML = mine.map(r => `
-        <tr style="border-top: 1px solid var(--bdr);">
-          <td style="padding:8px 16px; font-size:12px; font-weight:600; color:var(--text-dark);">${r.invoiceNo || '—'}</td>
-          <td style="padding:8px 16px; font-size:13px; color:var(--text-light);">${r.soldName || '—'}</td>
-          <td style="padding:8px 16px; font-size:11px; color:var(--text-light);">${r.issuedDate ? fmtLongDate(r.issuedDate) : '—'}</td>
-          <td style="padding:8px 16px; text-align:center;"><button type="button" class="btn btn-outline" style="font-size:10.5px; padding:4px 8px;" onclick="printProfileQuotation('q-${r.id}')"><i data-lucide="printer" style="width:11px;"></i></button></td>
+          <td style="padding:8px 16px; text-align:center;"><button type="button" class="btn btn-outline" style="font-size:10.5px; padding:4px 8px;" onclick="printProfileQuotation('b-${r.id}')" title="Print as billing invoice"><i data-lucide="printer" style="width:11px;"></i></button></td>
         </tr>`).join('');
       safeCreateIcons();
+    }
+    // Activity Logs — every login this account has made, most recent first,
+    // with the city/region/country resolved server-side from that login's IP.
+    // Logout isn't tracked, only login (see accounts/utils.py log_login_activity).
+    async function loadProfileActivityLogs() {
+      const body = document.getElementById('profile-activity-table-body');
+      const empty = document.getElementById('profile-activity-empty');
+      if (!body) return;
+      if (!backendConnected) { body.innerHTML = ''; if (empty) { empty.style.display = 'block'; empty.innerText = 'Not connected to the backend.'; } return; }
+      try {
+        const entries = await apiRequest('accounts/me/activity/', 'GET');
+        if (!entries || !entries.length) { body.innerHTML = ''; if (empty) { empty.style.display = 'block'; empty.innerText = 'No login activity recorded yet.'; } return; }
+        if (empty) empty.style.display = 'none';
+        body.innerHTML = entries.map(e => `
+          <tr style="border-top: 1px solid var(--bdr);">
+            <td style="padding:8px 16px; font-size:12px; color:var(--text-dark);">${e.location || 'Unknown location'}</td>
+            <td style="padding:8px 16px; font-size:11px; color:var(--text-light);">${fmtDateTime(e.created_at)}</td>
+          </tr>`).join('');
+      } catch (err) {
+        body.innerHTML = '';
+        if (empty) { empty.style.display = 'block'; empty.innerText = "Couldn't load activity logs."; }
+      }
+    }
+    function fmtDateTime(isoStr) {
+      if (!isoStr) return '—';
+      const d = new Date(isoStr);
+      return d.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit' });
     }
     function printProfileQuotation(key) {
       navigateTo('view-quotation');
