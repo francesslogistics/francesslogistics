@@ -2296,8 +2296,10 @@
         avatar.style.backgroundImage = 'none';
         avatar.innerText = initialsFor(user.name);
       }
+      // Accounts page is restricted to CEO and Sales Account Manager (rank 3+) —
+      // Sales Account Executives and Interns don't get the sidebar link at all.
       const accountsLink = document.getElementById('accounts-menu-link');
-      if (accountsLink) accountsLink.style.display = (user.rank && user.rank > 1) ? 'flex' : 'none';
+      if (accountsLink) accountsLink.style.display = (user.rank && user.rank >= 3) ? 'flex' : 'none';
     }
     async function handleLogin(e) {
       e.preventDefault();

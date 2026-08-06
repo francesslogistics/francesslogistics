@@ -55,14 +55,16 @@ def logout_view(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def register_view(request):
-    """Creates a new login. CEO-only — this used to be AllowAny, which meant
-    anyone (even logged out) could hit this endpoint directly and create an
-    account. The front-end already hides the button from non-CEOs, but that's
-    just UI; this is the actual enforcement."""
+    """Creates a new login. Restricted to CEO and Sales Account Manager (rank
+    3+) — the same accounts who can access the Accounts page at all. This
+    used to be AllowAny, which meant anyone (even logged out) could hit this
+    endpoint directly and create an account. The front-end already hides the
+    button from everyone else, but that's just UI; this is the actual
+    enforcement."""
     my_profile, _ = Profile.objects.get_or_create(user=request.user)
-    if my_profile.position != Profile.Position.CEO:
+    if my_profile.rank < 3:
         return Response(
-            {"detail": "Only the CEO account can create new accounts."},
+            {"detail": "Only the CEO and Sales Account Manager can create new accounts."},
             status=status.HTTP_403_FORBIDDEN,
         )
     serializer = RegisterSerializer(data=request.data)
@@ -106,8 +108,15 @@ def change_password_view(request):
 @permission_classes([IsAuthenticated])
 def accounts_list_view(request):
     """Powers the Accounts page — every user's profile, plus whether the
-    requesting user is allowed to edit each one (strictly-lower rank only)."""
+    requesting user is allowed to edit each one (strictly-lower rank only).
+    The page itself is restricted to CEO and Sales Account Manager (rank 3+)
+    — Sales Account Executives and Interns can't view it at all."""
     my_profile, _ = Profile.objects.get_or_create(user=request.user)
+    if my_profile.rank < 3:
+        return Response(
+            {"detail": "Only the CEO and Sales Account Manager can view Accounts."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
     accounts = []
     for profile in Profile.objects.select_related("user").order_by("user__username"):
         data = ProfileSerializer(profile).data
@@ -124,8 +133,14 @@ def accounts_detail_view(request, user_id):
     if the requester outranks the target's CURRENT position (same rule for
     both actions), and a position change may only assign something that
     still ranks below the requester's own (no promoting someone above or
-    to your own level)."""
+    to your own level). Same page-level restriction as the list view — only
+    CEO and Sales Account Manager can reach this endpoint at all."""
     my_profile, _ = Profile.objects.get_or_create(user=request.user)
+    if my_profile.rank < 3:
+        return Response(
+            {"detail": "Only the CEO and Sales Account Manager can manage Accounts."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
     target_profile = Profile.objects.select_related("user").filter(user_id=user_id).first()
     if not target_profile:
         return Response({"detail": "Account not found."}, status=status.HTTP_404_NOT_FOUND)
